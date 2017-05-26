@@ -1,5 +1,6 @@
 HTTP状态码大全
-HTTP 1.1的状态码被标记为新特性，因为许多浏览器只支持 HTTP 1.0。你应只把状态码发送给支持 HTTP 1.1的客户端，支持协议版本可以通过调用request.getRequestProtocol来检查。 
+HTTP 1.1的状态码被标记为新特性，因为许多浏览器只支持 HTTP 1.0。
+你应只把状态码发送给支持 HTTP 1.1的客户端，支持协议版本可以通过调用request.getRequestProtocol来检查。 
 
 本部分余下的内容会详细地介绍 HTTP 1.1中的状态码。这些状态码被分为五大类： 
 
@@ -9,10 +10,13 @@ HTTP 1.1的状态码被标记为新特性，因为许多浏览器只支持 HTTP 
 400-499 用于指出客户端的错误。 
 500-599 用于支持服务器错误。 
 
-HttpServletResponse中的常量代表关联不同标准消息的状态码。在servlet程序中，你会更多地用到这些常量的标识来使用状态码。例如：你一般会使用response.setStatus(response.SC_NO_CONTENT)而不是 response.setStatus(204)，因为后者不易理解而且容易导致错误。但是，你应当注意到服务器允许对消息轻微的改变，而客户端只注意状态码的数字值。所以服务器可能只返回 HTTP/1.1 200 而不是 HTTP/1.1 200 OK。 
+HttpServletResponse中的常量代表关联不同标准消息的状态码。在servlet程序中，你会更多地用到这些常量的标识来使用状态码。
+例如：你一般会使用response.setStatus(response.SC_NO_CONTENT)而不是 response.setStatus(204)，因为后者不易理解而且容易导致错误。
+但是，你应当注意到服务器允许对消息轻微的改变，而客户端只注意状态码的数字值。所以服务器可能只返回 HTTP/1.1 200 而不是 HTTP/1.1 200 OK。 
 
 100 (Continue/继续)
-如果服务器收到头信息中带有100-continue的请求，这是指客户端询问是否可以在后续的请求中发送附件。在这种情况下，服务器用100(SC_CONTINUE)允许客户端继续或用417 (Expectation Failed)告诉客户端不同意接受附件。这个状态码是 HTTP 1.1中新加入的。 
+如果服务器收到头信息中带有100-continue的请求，这是指客户端询问是否可以在后续的请求中发送附件。
+在这种情况下，服务器用100(SC_CONTINUE)允许客户端继续或用417 (Expectation Failed)告诉客户端不同意接受附件。这个状态码是 HTTP 1.1中新加入的。 
 
 101 (Switching Protocols/转换协议)
 101 (SC_SWITCHING_PROTOCOLS)状态码是指服务器将按照其上的头信息变为一个不同的协议。这是 HTTP 1.1中新加入的。 
@@ -27,17 +31,22 @@ HttpServletResponse中的常量代表关联不同标准消息的状态码。在s
 202 (SC_ACCEPTED)告诉客户端请求正在被执行，但还没有处理完。 
 
 203 (Non-Authoritative Information/非官方信息)
-状态码203 (SC_NON_AUTHORITATIVE_INFORMATION)是表示文档被正常的返回，但是由于正在使用的是文档副本所以某些响应头信息可能不正确。这是 HTTP 1.1中新加入的。 
+状态码203 (SC_NON_AUTHORITATIVE_INFORMATION)是表示文档被正常的返回，但是由于正在使用的是文档副本所以某些响应头信息可能不正确。
+这是 HTTP 1.1中新加入的。 
 
 204 (No Content/无内容)
-在并没有新文档的情况下，204 (SC_NO_CONTENT)确保浏览器继续显示先前的文档。这各状态码对于用户周期性的重载某一页非常有用，并且你可以确定先前的页面是否已经更新。例如，某个servlet可能作如下操作： 
+在并没有新文档的情况下，204 (SC_NO_CONTENT)确保浏览器继续显示先前的文档。
+这各状态码对于用户周期性的重载某一页非常有用，并且你可以确定先前的页面是否已经更新。
+例如，某个servlet可能作如下操作： 
 int pageVersion =Integer.parseInt(request.getParameter("pageVersion"));
 if (pageVersion >;= currentVersion) {
    response.setStatus(response.SC_NO_CONTENT);
 } else {
        // Create regular page
 }
-但是，这种方法对通过刷新响应头信息或等价的HTML标记自动重载的页面起作用，因为它会返回一个204状态码停止以后的重载。但基于JavaScript脚本的自动重载在这种情况下仍然需要能够起作用。可以阅读本书7.2 ( HTTP 1.1 Response Headers and Their Meaning/HTTP 1.1响应头信息以及他们的意义)部分的详细讨论。 
+但是，这种方法对通过刷新响应头信息或等价的HTML标记自动重载的页面起作用，因为它会返回一个204状态码停止以后的重载。
+但基于JavaScript脚本的自动重载在这种情况下仍然需要能够起作用。
+可以阅读本书7.2 ( HTTP 1.1 Response Headers and Their Meaning/HTTP 1.1响应头信息以及他们的意义)部分的详细讨论。 
 
 205 (Reset Content/重置内容)
 重置内容205 (SC_RESET_CONTENT)的意思是虽然没有新文档但浏览器要重置文档显示。这个状态码用于强迫浏览器清除表单域。这是 HTTP 1.1中新加入的。 
@@ -52,25 +61,41 @@ if (pageVersion >;= currentVersion) {
 301 (SC_MOVED_PERMANENTLY)状态是指所请求的文档在别的地方；文档新的URL会在定位响应头信息中给出。浏览器会自动连接到新的URL。 
 
 302 (Found/找到)
-与301有些类似，只是定位头信息中所给的URL应被理解为临时交换地址而不是永久的。注意：在 HTTP 1.0中，消息是临时移动(Moved Temporarily)的而不是被找到，因此HttpServletResponse中的常量是SC_MOVED_TEMPORARILY不是我们以为的SC_FOUND。 
+与301有些类似，只是定位头信息中所给的URL应被理解为临时交换地址而不是永久的。
+注意：在 HTTP 1.0中，消息是临时移动(Moved Temporarily)的而不是被找到，
+因此HttpServletResponse中的常量是SC_MOVED_TEMPORARILY不是我们以为的SC_FOUND。 
 
 注意
 代表状态码302的常量是SC_MOVED_TEMPORARILY而不是SC_FOUND。 
 
-状态码302是非常有用的因为浏览器自动连接在定为响应头信息中给出的新URL。这非常有用，而且为此有一个专门的方法——sendRedirect。使用response.sendRedirect(url)比调用response.setStatus(response.SC_MOVED_TEMPORARILY)和response.setHeader("Location", url)多几个好处。首先，response.sendRedirect(url)方法明显要简单和容易。第二，servlet自动建立一页保存这一连接以提供给那些不能自动转向的浏览器显示。最后，在servlet 2.2版本（J2EE中的版本）中，sendRedirect能够处理相对路径，自动转换为绝对路径。但是你只能在2.1版本中使用绝对路径。 
+状态码302是非常有用的因为浏览器自动连接在定为响应头信息中给出的新URL。
+这非常有用，而且为此有一个专门的方法——sendRedirect。
+使用response.sendRedirect(url)比调用response.setStatus(response.SC_MOVED_TEMPORARILY)和response.setHeader("Location", url)多几个好处。
+首先，response.sendRedirect(url)方法明显要简单和容易。第二，servlet自动建立一页保存这一连接以提供给那些不能自动转向的浏览器显示。
+最后，在servlet 2.2版本（J2EE中的版本）中，sendRedirect能够处理相对路径，自动转换为绝对路径。但是你只能在2.1版本中使用绝对路径。 
 
-如果你将用户转向到站点的另一页中，你要用 HttpServletResponse 中的 encodeURL 方法传送URL。这么做可预防不断使用基于URL重写的会话跟踪的情况。URL重写是一种在你的网站跟踪不使用 cookies 的用户的方法。这是通过在每一个URL尾部附加路径信息实现的，但是 servlet 会话跟踪API会自动的注意这些细节。会话跟踪在第九章讨论，并且养成使用 encodeURL 的习惯会使以后添加会话跟踪的功能更容易很多。 
+如果你将用户转向到站点的另一页中，你要用 HttpServletResponse 中的 encodeURL 方法传送URL。
+这么做可预防不断使用基于URL重写的会话跟踪的情况。URL重写是一种在你的网站跟踪不使用 cookies 的用户的方法。
+这是通过在每一个URL尾部附加路径信息实现的，但是 servlet 会话跟踪API会自动的注意这些细节。
+会话跟踪在第九章讨论，并且养成使用 encodeURL 的习惯会使以后添加会话跟踪的功能更容易很多。 
 
 核心技巧
-如果你将用户转向到你的站点的其他页面，用 response.sendRedirect(response.encodeURL(url)) 的方式事先计划好会话跟踪(session tracking)要比只是调用 response.sendRedirect(url) 好的多。 
+如果你将用户转向到你的站点的其他页面，用 response.sendRedirect(response.encodeURL(url)) 的方式事先计划好会话跟踪(session tracking)
+要比只是调用 response.sendRedirect(url) 好的多。 
 
-这个状态码有时可以与301交换使用。例如，如果你错误的访问了http://www.talentdigger.cn/home/link.php?url=aG9zdC9%2BdXNlcg%3D%3D（路径信息不完整），有些服务器就会回复301状态码而有些则回复302。从技术上说，如果最初的请求是GET浏览器只是被假定自动转向。如果想了解更多细节，请看状态码307的讨论。 
+这个状态码有时可以与301交换使用。
+例如，如果你错误的访问了http://www.talentdigger.cn/home/link.php?url=aG9zdC9%2BdXNlcg%3D%3D（路径信息不完整），
+有些服务器就会回复301状态码而有些则回复302。从技术上说，如果最初的请求是GET浏览器只是被假定自动转向。如果想了解更多细节，请看状态码307的讨论。 
 
 303 (See Other/参见其他信息)
 这个状态码和 301、302 相似，只是如果最初的请求是 POST，那么新文档（在定位头信息中给出）药用 GET 找回。这个状态码是新加入 HTTP 1.1中的。 
 
 304 (Not Modified/为修正)
-当客户端有一个缓存的文档，通过提供一个 If-Modified-Since 头信息可指出客户端只希望文档在指定日期之后有所修改时才会重载此文档，用这种方式可以进行有条件的请求。304 (SC_NOT_MODIFIED)是指缓冲的版本已经被更新并且客户端应刷新文档。另外，服务器将返回请求的文档及状态码 200。servlet一般情况下不会直接设置这个状态码。它们会实现getLastModified方法并根据修正日期让默认服务方法处理有条件的请求。这个方法的例程已在2.8部分(An Example Using Servlet Initialization and Page Modification Dates/一个使用servlet初始化和页面修正日期的例子)给出。 
+当客户端有一个缓存的文档，通过提供一个 If-Modified-Since 头信息可指出客户端只希望文档在指定日期之后有所修改时才会重载此文档，
+用这种方式可以进行有条件的请求。304 (SC_NOT_MODIFIED)是指缓冲的版本已经被更新并且客户端应刷新文档。
+另外，服务器将返回请求的文档及状态码 200。servlet一般情况下不会直接设置这个状态码。
+它们会实现getLastModified方法并根据修正日期让默认服务方法处理有条件的请求。
+这个方法的例程已在2.8部分(An Example Using Servlet Initialization and Page Modification Dates/一个使用servlet初始化和页面修正日期的例子)给出。 
 
 305 (Use Proxy/使用代理)
 305 (SC_USE_PROXY)表示所请求的文档要通过定位头信息中的代理服务器获得。这个状态码是新加入 HTTP 1.1中的。 
