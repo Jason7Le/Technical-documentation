@@ -9,3 +9,8 @@ oninput是onpropertychange的非IE浏览器版本，支持firefox和opera等浏�
 
 
 代码
+$(function()){
+    $("input").bind('input propertychange', function(){
+               //Do Something
+    });
+}
