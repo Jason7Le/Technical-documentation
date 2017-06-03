@@ -1,0 +1,11 @@
+<div class="Content-Area" contenteditable="true" spellcheck="true" role="textbox" data-placeholder="文字500字，图片5张（大小2M以内、格式jpg、png、gif、jpeg）" ></div>
+
+.medium-editor-placeholder:after{
+  content: attr(data-placeholder)!important; /********这里是重点*******/
+  position: absolute;
+  left: 8px;
+  top: 22px;
+  white-space: pre;
+  padding: inherit;
+  margin: inherit;
+}
