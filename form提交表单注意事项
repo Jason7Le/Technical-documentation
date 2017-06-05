@@ -1,0 +1,22 @@
+1.今天做项目犯了一个小错误：
+  表单里面在嵌套表单from里面再用from，这样是里面嵌套的表单就没有效果；
+  
+提交表单的时候可以用jq.form.js插件来做。
+<form id="UpImg" method="post" enctype="multipart/form-data" >
+    <input type="file" id="uploadFile" name="uploadimage" />
+</form>
+
+$("#UpImg").ajaxSubmit({
+     dataType:  'json',
+     url: 'ajax/url',
+     beforeSend: function() {
+     //html("上传中...");
+     },
+     success: function(data) {
+         //html("上传成功！")；
+     },
+     error:function(data){
+     //html("上传失败");
+     }
+
+如果多个表单的情况可以改变上传的URL，来实现多个不同表单上传，每一个表单上传成功之后然后就更改URL恢复到之前的URL；
