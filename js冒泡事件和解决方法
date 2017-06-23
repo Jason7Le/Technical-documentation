@@ -1,0 +1,24 @@
+js冒泡：
+/**html**/
+<ul id="parents">
+	<li class="children"></li>
+	<li class="children"></li>
+	<li class="children"></li>
+	<li class="children"></li>
+	<li class="children"></li>
+</ul>
+
+var parents = document.getElmentById("parents");
+var children = document.getElmentsByClassName("children");
+
+parents.click(function(){
+    //操作父元素
+});
+children.click(function(event) {
+   //操作子元素
+});
+
+操作子元素的时候，向上冒泡之后父元素也操作到了，
+所以要做一个阻止冒泡的事件：
+
+event.stoppropagation();
