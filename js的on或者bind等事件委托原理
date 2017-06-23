@@ -1,0 +1,18 @@
+/***on或者bind等事件委托原理***/
+此类事件是通过on或者bind等事件委托来把当前元素下的需要操作的元素，（比如在ul里面append的li标签）
+绑定给ul，然后让li的事件在执行一次。
+
+
+/****html****/
+<ul>
+  <!--当前无内容-->
+</ul>
+
+/****js****/
+var html = '<li>这里是新内容</li>';
+var oprationTag = document.getElementsByTagName("ul");
+oprationTag.append(html);
+//事件绑定
+oprationTag.on（"click", "li", function(){
+  //doing some thing
+}）;
