@@ -8,8 +8,8 @@ js冒泡：
 	<li class="children"></li>
 </ul>
 
-var parents = document.getElmentById("parents");
-var children = document.getElmentsByClassName("children");
+var parents = document.getElementById("parents");
+var children = document.getElementsByClassName("children");
 
 parents.click(function(){
     //操作父元素
