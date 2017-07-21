@@ -1,0 +1,264 @@
+这篇文章主要介绍了JS在可编辑的div中的光标位置插入内容的方法,分别用js与jQuery两种方式加以实现,是非常实用的特效技巧,需要的朋友可以参考下:
+本文实例讲述了js实现在可编辑div中指定位置插入内容的方法，就像我们使用的编辑器一样，分享给大家供大家参考。具体实现方法如下：
+
+首先要让DIV启用编辑模式
+<div contenteditable=true id="divTest"></div>
+通过设定contenteditable=true开启div的编辑模式.这样DIV就可以跟文本框一样输入内容了。
+ 不扯话题了。下面说怎么获取或设置光标位置.
+2个步骤：
+
+① 获取DIV中的光标位置
+② 改变光标位置
+var cursor = 0; // 光标位置  
+
+document.onselectionchange = function () {
+
+var range = document.selection.createRange();
+
+var srcele = range.parentElement();//获取到当前元素
+
+var copy = document.body.createTextRange();
+
+copy.moveToElementText(srcele);
+
+for (cursor = 0; copy.compareEndPoints("StartToStart", range) < 0; cursor++) {
+
+ copy.moveStart("character", 1);//改变光标位置，实际上我们是在记录cursor的数量.
+
+}
+
+}
+给document绑定光标变化事件。用来记录光标位置.
+这样就可以拿到DIV的光标位置了.
+function moveEnd(obj) {
+
+lyTXT1.focus();
+
+var r = document.selection.createRange();
+
+//因为这里死从当前光标开始移动的(好像文本框的是从0算起.)所以我们需要拿到当前光标位置，然后就可以计算出要移动多少位了，这样就可以把光标移动到想要的位置了
+
+r.moveStart('character', lyTXT1.innerText.length - cursor);
+
+r.collapse(true);
+
+r.select();
+
+}
+通过上面的我们就可以将DIV中的光标移动到最后面了
+ 一个完整的实例
+ <button type="button" onclick="document.getElementById('test').focus(); insertHtmlAtCaret('<b>INSERTED</b>');">插入字符</button>
+
+<div contentEditable="true" style="height:50px; border:2px solid red;" id="test"> </div>
+
+ 
+
+function insertHtmlAtCaret(html) {
+
+var sel, range;
+
+if (window.getSelection) {
+
+// IE9 and non-IE
+
+sel = window.getSelection();
+
+if (sel.getRangeAt && sel.rangeCount) {
+
+range = sel.getRangeAt(0);
+
+range.deleteContents();
+
+// Range.createContextualFragment() would be useful here but is
+
+// non-standard and not supported in all browsers (IE9, for one)
+
+var el = document.createElement("div");
+
+el.innerHTML = html;
+
+var frag = document.createDocumentFragment(), node, lastNode;
+
+while ( (node = el.firstChild) ) {
+
+lastNode = frag.appendChild(node);
+
+}
+
+range.insertNode(frag);
+
+// Preserve the selection
+
+if (lastNode) {
+
+range = range.cloneRange();
+
+range.setStartAfter(lastNode);
+
+range.collapse(true);
+
+sel.removeAllRanges();
+
+sel.addRange(range);
+
+}
+
+}
+
+} else if (document.selection && document.selection.type != "Control") {
+
+// IE < 9
+
+document.selection.createRange().pasteHTML(html);
+
+}
+
+}
+再看一个基于jquery的实例
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<title>contenteditable</title>
+
+<style>
+
+*{
+
+ margin:0;padding:0;
+
+}
+
+.im-message-area{
+
+ width:98%;
+
+ padding:2px;
+
+ height:75px;
+
+ border:#000 solid 1px;
+
+ background:#fff;
+
+ font:12px/20px arial,"5b8b4f53";
+
+ word-wrap:break-word;
+
+ overflow-y:auto;
+
+ line-height:1;
+
+}
+
+.ul{display:none;}
+
+.ul li{
+
+ background-color:#CCC;
+
+ width:50px;
+
+}
+
+</style>
+
+<script language="javascript" type="text/javascript">
+
+function inimage(text){
+
+ var obj= $(".im-message-area")[0];
+
+ var range, node;
+
+ if(!obj.hasfocus) {
+
+  obj.focus();
+
+ }
+
+    if (window.getSelection && window.getSelection().getRangeAt) {
+
+        range = window.getSelection().getRangeAt(0);
+
+  range.collapse(false);
+
+        node = range.createContextualFragment(text);
+
+  var c = node.lastChild;
+
+        range.insertNode(node);
+
+  if(c){
+
+   range.setEndAfter(c);
+
+   range.setStartAfter(c)
+
+  }
+
+  var j = window.getSelection();
+
+  j.removeAllRanges();
+
+  j.addRange(range);
+
+  
+
+    } else if (document.selection && document.selection.createRange) {
+
+        document.selection.createRange().pasteHTML(text);
+
+    }
+
+}
+
+$(document).ready(function(){
+
+ $('#button').click(function(){
+
+  $('.ul').show();
+
+ })
+
+ $('.ul li').each(function(){
+
+  $(this).click(function(){
+
+   inimage($(this).text());
+
+  }) 
+
+ })
+
+});
+
+</script>
+
+</head>
+
+<body>
+
+ <div contenteditable="true" id="im_message_area" class="im-message-area"><br></div>
+
+ <a href="javascript:void(0)" id="button">按钮</a>
+
+ <ul class="ul">
+
+  <li>(笑)</li>
+
+  <li>(哭)</li>
+
+  <li>(乐)</li>
+
+ </ul>
+
+</body>
+
+</html>
